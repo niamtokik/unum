@@ -1,0 +1,27 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/erlang:19
+      - image: circleci/erlang:20
+      - image: circleci/erlang:21
+      - image: circleci/erlang:22
+    steps:
+      - checkout
+      - run: "rebar3 compile"
+  test:
+    docker:
+      - image: circleci/erlang:19
+      - image: circleci/erlang:20
+      - image: circleci/erlang:21
+      - image: circleci/erlang:22
+    steps:
+      - run: "rebar3 eunit"
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test
