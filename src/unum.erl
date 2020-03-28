@@ -64,14 +64,16 @@ decode(Binary, {ExponentSizeSize, FractionSizeSize}, _Options) ->
     FS = FractionSize+1,
     ES = ExponentSize+1,
     case Rest of
-        <<Ubit:1, F:FS, E:ES, S:1>> -> {Ubit, F, E, S};
-        <<Ubit:1, F:FS, E:ES, S:1, R/bitstring>> -> {Ubit, F, E, S, R}
+        <<Ubit:1, F:FS, E:ES, S:1>> -> {FS, ES, Ubit, F, E, S};
+        <<Ubit:1, F:FS, E:ES, S:1, R/bitstring>> -> {FS, ES, Ubit, F, E, S, R}
     end.
 
 %%--------------------------------------------------------------------
 %% @doc decoding functions unit test
 %%--------------------------------------------------------------------
 decode_test() ->
+    ?assertEqual(decode(<<2#1011:4, 2#111:3, 2#1:1, 2#111111100001:12, 2#11001101:8, 2#0:1>>, {3,4})
+                ,{0, 6.022e23}),
     ?assertEqual(decode(<<2#111:3, 2#11:2, 2#1:1, 2#00000000:8, 2#0000:4, 2#0:1>>, {2,3})
                 ,{0, 0.00006103515625}),
     ?assertEqual(decode(<<2#111:3, 2#11:2, 2#1:1, 2#00000000:8, 2#0000:4, 2#1:1>>, {2,3})
